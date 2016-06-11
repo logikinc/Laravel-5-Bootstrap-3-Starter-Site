@@ -108,5 +108,4 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     //Admin Dashboard
     $this->get('/', 'App\Http\Controllers\Admin\DashboardController@index');
-
 });

@@ -48,6 +48,6 @@ class AppServiceProvider extends ServiceProvider
                 ->middleware($this->stack)->then(function ($request) use ($router) {
                     return $router->dispatch($request);
                 });
-            });
+        });
     }
 }
