@@ -1,17 +1,19 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
 
-use App\PhotoAlbum;
-use App\Language;
+namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\AdminController;
-use Bllim\Datatables\Facade\Datatables;
-use App\Http\Requests\Admin\PhotoAlbumRequest;
 use App\Http\Requests\Admin\DeleteRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Admin\PhotoAlbumRequest;
 use App\Http\Requests\Admin\ReorderRequest;
+use App\Language;
+use App\PhotoAlbum;
+use Bllim\Datatables\Facade\Datatables;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
-class PhotoAlbumController extends AdminController {
-
+class PhotoAlbumController extends AdminController
+{
     /*
     * Display a listing of the resource.
     *
@@ -22,6 +24,7 @@ class PhotoAlbumController extends AdminController {
         // Show the page
         return view('admin.photoalbum.index');
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -30,9 +33,9 @@ class PhotoAlbumController extends AdminController {
     public function getCreate()
     {
         $languages = Language::all();
-        $language = "";
+        $language = '';
         // Show the page
-        return view('admin.photoalbum.create_edit', compact('languages','language'));
+        return view('admin.photoalbum.create_edit', compact('languages', 'language'));
     }
 
     /**
@@ -43,20 +46,22 @@ class PhotoAlbumController extends AdminController {
     public function postCreate(PhotoAlbumRequest $request)
     {
         $photoalbum = new PhotoAlbum();
-        $photoalbum -> user_id = Auth::id();
-        $photoalbum -> language_id = $request->language_id;
-        $photoalbum -> name = $request->name;
-        $photoalbum -> description = $request->description;
-        $photoalbum -> folderid = sha1($request -> name . time());
-        if ($photoalbum -> save()) {
-            File::makeDirectory(public_path() . '/images/photoalbum/' . $photoalbum -> folderid);
-            File::makeDirectory(public_path() . '/images/photoalbum/' . $photoalbum -> folderid . '/thumbs');
+        $photoalbum->user_id = Auth::id();
+        $photoalbum->language_id = $request->language_id;
+        $photoalbum->name = $request->name;
+        $photoalbum->description = $request->description;
+        $photoalbum->folderid = sha1($request->name.time());
+        if ($photoalbum->save()) {
+            File::makeDirectory(public_path().'/images/photoalbum/'.$photoalbum->folderid);
+            File::makeDirectory(public_path().'/images/photoalbum/'.$photoalbum->folderid.'/thumbs');
         }
     }
+
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
     public function getEdit($id)
@@ -65,32 +70,33 @@ class PhotoAlbumController extends AdminController {
         $language = $photoalbum->language_id;
         $languages = Language::all();
 
-        return view('admin.photoalbum.create_edit',compact('photoalbum','languages','language'));
+        return view('admin.photoalbum.create_edit', compact('photoalbum', 'languages', 'language'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
     public function postEdit(PhotoAlbumRequest $request, $id)
     {
         $photoalbum = PhotoAlbum::find($id);
-        $photoalbum -> user_id_edited = Auth::id();
-        $photoalbum -> language_id = $request->language_id;
-        $photoalbum -> name = $request->name;
-        $photoalbum -> description = $request->description;
-        $photoalbum -> save();
+        $photoalbum->user_id_edited = Auth::id();
+        $photoalbum->language_id = $request->language_id;
+        $photoalbum->name = $request->name;
+        $photoalbum->description = $request->description;
+        $photoalbum->save();
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param $id
+     *
      * @return Response
      */
-
     public function getDelete($id)
     {
         $photoalbum = PhotoAlbum::find($id);
@@ -102,9 +108,10 @@ class PhotoAlbumController extends AdminController {
      * Remove the specified resource from storage.
      *
      * @param $id
+     *
      * @return Response
      */
-    public function postDelete(DeleteRequest $request,$id)
+    public function postDelete(DeleteRequest $request, $id)
     {
         $photoalbum = PhotoAlbum::find($id);
         $photoalbum->delete();
@@ -118,11 +125,11 @@ class PhotoAlbumController extends AdminController {
     public function data()
     {
         $photo_category = PhotoAlbum::join('language', 'language.id', '=', 'photo_album.language_id')
-            ->select(array('photo_album.id','photo_album.name','language.name as language','photo_album.id as images_count', 'photo_album.created_at'))
+            ->select(['photo_album.id', 'photo_album.name', 'language.name as language', 'photo_album.id as images_count', 'photo_album.created_at'])
             ->orderBy('photo_album.position', 'ASC');
 
         return Datatables::of($photo_category)
-            -> edit_column('images_count', '<a class="btn btn-primary btn-sm" >{{ DB::table(\'photo\')->where(\'photo_album_id\', \'=\', $id)->count() }}</a>')
+            ->edit_column('images_count', '<a class="btn btn-primary btn-sm" >{{ DB::table(\'photo\')->where(\'photo_album_id\', \'=\', $id)->count() }}</a>')
             ->add_column('actions', '<a href="{{{ URL::to(\'admin/photo/\' . $id . \'/itemsforalbum\' ) }}}" class="btn btn-info btn-sm" ><span class="glyphicon glyphicon-open"></span>  {{ Lang::get("admin/modal.items") }}</a>
                     <a href="{{{ URL::to(\'admin/photoalbum/\' . $id . \'/edit\' ) }}}" class="btn btn-success btn-sm iframe" ><span class="glyphicon glyphicon-pencil"></span>  {{ Lang::get("admin/modal.edit") }}</a>
                     <a href="{{{ URL::to(\'admin/photoalbum/\' . $id . \'/delete\' ) }}}" class="btn btn-sm btn-danger iframe"><span class="glyphicon glyphicon-trash"></span> {{ Lang::get("admin/modal.delete") }}</a>
@@ -133,22 +140,24 @@ class PhotoAlbumController extends AdminController {
     }
 
     /**
-     * Reorder items
+     * Reorder items.
      *
      * @param items list
+     *
      * @return items from @param
      */
-    public function getReorder(ReorderRequest $request) {
+    public function getReorder(ReorderRequest $request)
+    {
         $list = $request->list;
-        $items = explode(",", $list);
+        $items = explode(',', $list);
         $order = 1;
         foreach ($items as $value) {
             if ($value != '') {
-                PhotoAlbum::where('id', '=', $value) -> update(array('position' => $order));
+                PhotoAlbum::where('id', '=', $value)->update(['position' => $order]);
                 $order++;
             }
         }
+
         return $list;
     }
-
 }

@@ -1,9 +1,10 @@
 <?php
-$router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+
+$router->group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     $this->pattern('id', '[0-9]+');
     $this->pattern('id2', '[0-9]+');
 
-    #Language
+    //Language
     $this->get('language', 'App\Http\Controllers\Admin\LanguageController@index');
     $this->get('language/create', 'App\Http\Controllers\Admin\LanguageController@getCreate');
     $this->post('language/create', 'App\Http\Controllers\Admin\LanguageController@postCreate');
@@ -14,7 +15,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->get('language/data', 'App\Http\Controllers\Admin\LanguageController@data');
     $this->get('language/reorder', 'App\Http\Controllers\Admin\LanguageController@getReorder');
 
-    #News category
+    //News category
     $this->get('newscategory', 'App\Http\Controllers\Admin\NewsCategoryController@index');
     $this->get('newscategory/create', 'App\Http\Controllers\Admin\NewsCategoryController@getCreate');
     $this->post('newscategory/create', 'App\Http\Controllers\Admin\NewsCategoryController@postCreate');
@@ -25,7 +26,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->get('newscategory/data', 'App\Http\Controllers\Admin\NewsCategoryController@data');
     $this->get('newscategory/reorder', 'App\Http\Controllers\Admin\NewsCategoryController@getReorder');
 
-    #News
+    //News
     $this->get('news', 'App\Http\Controllers\Admin\NewsController@index');
     $this->get('news/create', 'App\Http\Controllers\Admin\NewsController@getCreate');
     $this->post('news/create', 'App\Http\Controllers\Admin\NewsController@postCreate');
@@ -36,7 +37,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->get('news/data', 'App\Http\Controllers\Admin\NewsController@data');
     $this->get('news/reorder', 'App\Http\Controllers\Admin\NewsController@getReorder');
 
-    #Photo Album
+    //Photo Album
     $this->get('photoalbum', 'App\Http\Controllers\Admin\PhotoAlbumController@index');
     $this->get('photoalbum/create', 'App\Http\Controllers\Admin\PhotoAlbumController@getCreate');
     $this->post('photoalbum/create', 'App\Http\Controllers\Admin\PhotoAlbumController@postCreate');
@@ -47,7 +48,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->get('photoalbum/data', 'App\Http\Controllers\Admin\PhotoAlbumController@data');
     $this->get('photoalbum/reorder', 'App\Http\Controllers\Admin\PhotoAlbumController@getReorder');
 
-    #Photo
+    //Photo
     $this->get('photo', 'App\Http\Controllers\Admin\PhotoController@index');
     $this->get('photo/create', 'App\Http\Controllers\Admin\PhotoController@getCreate');
     $this->post('photo/create', 'App\Http\Controllers\Admin\PhotoController@postCreate');
@@ -61,7 +62,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->get('photo/data/{id}', 'App\Http\Controllers\Admin\PhotoController@data');
     $this->get('photo/reorder', 'App\Http\Controllers\Admin\PhotoController@getReorder');
 
-    #Video
+    //Video
     $this->get('videoalbum', 'App\Http\Controllers\Admin\VideoAlbumController@index');
     $this->get('videoalbum/create', 'App\Http\Controllers\Admin\VideoAlbumController@getCreate');
     $this->post('videoalbum/create', 'App\Http\Controllers\Admin\VideoAlbumController@postCreate');
@@ -72,7 +73,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->get('videoalbum/data', 'App\Http\Controllers\Admin\VideoAlbumController@data');
     $this->get('video/reorder', 'App\Http\Controllers\Admin\VideoAlbumController@getReorder');
 
-    #Video
+    //Video
     $this->get('video', 'App\Http\Controllers\Admin\VideoController@index');
     $this->get('video/create', 'App\Http\Controllers\Admin\VideoController@getCreate');
     $this->post('video/create', 'App\Http\Controllers\Admin\VideoController@postCreate');
@@ -85,7 +86,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->get('video/data/{id}', 'App\Http\Controllers\Admin\VideoController@data');
     $this->get('video/reorder', 'App\Http\Controllers\Admin\VideoController@getReorder');
 
-    #Users
+    //Users
     $this->get('users/', 'App\Http\Controllers\Admin\UserController@index');
     $this->get('users/create', 'App\Http\Controllers\Admin\UserController@getCreate');
     $this->post('users/create', 'App\Http\Controllers\Admin\UserController@postCreate');
@@ -95,7 +96,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->post('users/{id}/delete', 'App\Http\Controllers\Admin\UserController@postDelete');
     $this->get('users/data', 'App\Http\Controllers\Admin\UserController@data');
 
-    #Roles
+    //Roles
     $this->get('roles/', 'App\Http\Controllers\Admin\RoleController@index');
     $this->get('roles/create', 'App\Http\Controllers\Admin\RoleController@getCreate');
     $this->post('roles/create', 'App\Http\Controllers\Admin\RoleController@postCreate');
@@ -105,7 +106,7 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     $this->post('roles/{id}/delete', 'App\Http\Controllers\Admin\RoleController@postDelete');
     $this->get('roles/data', 'App\Http\Controllers\Admin\RoleController@data');
 
-    #Admin Dashboard
+    //Admin Dashboard
     $this->get('/', 'App\Http\Controllers\Admin\DashboardController@index');
 
 });

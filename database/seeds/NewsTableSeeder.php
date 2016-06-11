@@ -1,28 +1,28 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\News;
+use Illuminate\Database\Seeder;
 
-class NewsTableSeeder extends Seeder {
+class NewsTableSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('news')->delete();
 
-	public function run()
-	{
-		DB::table('news')->delete();
-		
-		$introduction = "Cras egestas non arcu quis facilisis. Etiam scelerisque felis a ante 
+        $introduction = 'Cras egestas non arcu quis facilisis. Etiam scelerisque felis a ante 
 		vehicula dignissim. Nunc nulla erat, placerat in ipsum efficitur, efficitur volutpat enim. 
 		In nec lobortis sapien. Maecenas quis nunc molestie, ultrices magna nec, cursus risus. 
-		Fusce viverra urna at blandit dignissim. Duis id porta augue, vel tempor enim. Ut eu orci dolor. ";
-		
-		$introduction1 = "Duis posuere cursus arcu, consectetur tincidunt turpis vulputate eu. 
+		Fusce viverra urna at blandit dignissim. Duis id porta augue, vel tempor enim. Ut eu orci dolor. ';
+
+        $introduction1 = 'Duis posuere cursus arcu, consectetur tincidunt turpis vulputate eu. 
 		Integer venenatis consequat turpis sit amet bibendum. Nulla nibh ex, semper nec sem sed, consectetur 
 		tincidunt metus. Aliquam mollis condimentum magna id tincidunt. Suspendisse pellentesque placerat 
 		accumsan. Sed a turpis lacus. Donec luctus lorem a turpis scelerisque tincidunt. Etiam at tellus 
 		sed erat elementum dictum. In sit amet nulla mattis, placerat erat non, vehicula metus. Morbi nulla 
 		sapien, sollicitudin non vulputate et, sodales in nisi. Donec sapien dolor, tincidunt sed ultricies 
-		in, ultrices sit amet ante. ";
-		
-		$content = "Quisque congue sed mauris sit amet fringilla. Pellentesque a justo mollis, 
+		in, ultrices sit amet ante. ';
+
+        $content = "Quisque congue sed mauris sit amet fringilla. Pellentesque a justo mollis, 
 		laoreet felis vehicula, elementum urna. Proin a nisl nec lorem mollis malesuada. Suspendisse sollicitudin 
 		volutpat elementum. Mauris luctus egestas justo, nec tincidunt est luctus a. Aenean a convallis sem. 
 		Aenean quis lorem efficitur, rutrum libero eu, efficitur nunc. Praesent eu metus pellentesque, mollis 
@@ -47,33 +47,32 @@ class NewsTableSeeder extends Seeder {
 		tortor, vitae dignissim dolor ultricies eu. Vivamus rutrum vestibulum auctor. Aliquam eu orci ligula. 
 		Quisque at ligula ex. Suspendisse in ante eget turpis sollicitudin lobortis tincidunt sed nibh. Phasellus 
 		elementum nibh vitae rutrum porta. Pellentesque vitae vestibulum purus. Curabitur placerat mattis tempor.";
-		
-		$news = new News();
-        $news->language_id = 1;
-        $news->user_id = 1;
-		$news->newscategory_id = 1;
-        $news->title = "Cras egestas non arcu quis facilisis";
-		$news->introduction = $introduction;
-		$news->content = $content;
-        $news->save();
-        
-        $news = new News();
-        $news->language_id = 1;
-        $news->user_id = 1;
-		$news->newscategory_id = 1;
-        $news->title = "Fusce vel turpis ultricies";
-		$news->introduction = $introduction1;
-		$news->content = $content;
-        $news->save();
-        
-        $news = new News();
-        $news->language_id = 1;
-        $news->user_id = 1;
-		$news->newscategory_id = 1;
-        $news->title = "Donec ligula sem, facilisis ac tristique et, imperdiet nec nisi";
-		$news->introduction = $introduction;
-		$news->content = $content;
-        $news->save();
-	}
 
+        $news = new News();
+        $news->language_id = 1;
+        $news->user_id = 1;
+        $news->newscategory_id = 1;
+        $news->title = 'Cras egestas non arcu quis facilisis';
+        $news->introduction = $introduction;
+        $news->content = $content;
+        $news->save();
+
+        $news = new News();
+        $news->language_id = 1;
+        $news->user_id = 1;
+        $news->newscategory_id = 1;
+        $news->title = 'Fusce vel turpis ultricies';
+        $news->introduction = $introduction1;
+        $news->content = $content;
+        $news->save();
+
+        $news = new News();
+        $news->language_id = 1;
+        $news->user_id = 1;
+        $news->newscategory_id = 1;
+        $news->title = 'Donec ligula sem, facilisis ac tristique et, imperdiet nec nisi';
+        $news->introduction = $introduction;
+        $news->content = $content;
+        $news->save();
+    }
 }

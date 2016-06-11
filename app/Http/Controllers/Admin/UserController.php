@@ -1,16 +1,18 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
 
-use App\Http\Controllers\AdminController;
-use App\User;
+namespace App\Http\Controllers\Admin;
+
 use App\AssignedRoles;
-use App\Role;
-use Bllim\Datatables\Facade\Datatables;
-use App\Http\Requests\Admin\UserRequest;
-use App\Http\Requests\Admin\UserEditRequest;
+use App\Http\Controllers\AdminController;
 use App\Http\Requests\Admin\DeleteRequest;
+use App\Http\Requests\Admin\UserEditRequest;
+use App\Http\Requests\Admin\UserRequest;
+use App\Role;
+use App\User;
+use Bllim\Datatables\Facade\Datatables;
 
-class UserController extends AdminController {
-
+class UserController extends AdminController
+{
     /*
     * Display a listing of the resource.
     *
@@ -27,10 +29,12 @@ class UserController extends AdminController {
      *
      * @return Response
      */
-    public function getCreate() {
+    public function getCreate()
+    {
         $roles = Role::all();
         // Selected groups
-        $selectedRoles = array();
+        $selectedRoles = [];
+
         return view('admin.users.create_edit', compact('roles', 'selectedRoles'));
     }
 
@@ -39,21 +43,20 @@ class UserController extends AdminController {
      *
      * @return Response
      */
-    public function postCreate(UserRequest $request) {
-
-        $user = new User ();
-        $user -> name = $request->name;
-        $user -> email = $request->email;
-        $user -> password = $request->password;
-        $user -> confirmation_code = $request->password;
-        $user -> confirmed = $request->confirmed;
-        $user -> save();
-        foreach($request->roles as $item)
-        {
+    public function postCreate(UserRequest $request)
+    {
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->confirmation_code = $request->password;
+        $user->confirmed = $request->confirmed;
+        $user->save();
+        foreach ($request->roles as $item) {
             $role = new AssignedRoles();
-            $role -> role_id = $item;
-            $role -> user_id = $user -> id;
-            $role -> save();
+            $role->role_id = $item;
+            $role->user_id = $user->id;
+            $role->save();
         }
     }
 
@@ -61,13 +64,14 @@ class UserController extends AdminController {
      * Show the form for editing the specified resource.
      *
      * @param $user
+     *
      * @return Response
      */
-    public function getEdit($id) {
-
+    public function getEdit($id)
+    {
         $user = User::find($id);
         $roles = Role::all();
-        $selectedRoles = AssignedRoles::where('user_id','=',$user->id)->lists('role_id');
+        $selectedRoles = AssignedRoles::where('user_id', '=', $user->id)->lists('role_id');
 
         return view('admin.users.create_edit', compact('user', 'roles', 'selectedRoles'));
     }
@@ -76,40 +80,41 @@ class UserController extends AdminController {
      * Update the specified resource in storage.
      *
      * @param $user
+     *
      * @return Response
      */
-    public function postEdit(UserEditRequest $request, $id) {
-
+    public function postEdit(UserEditRequest $request, $id)
+    {
         $user = User::find($id);
-        $user -> name = $request->name;
-        $user -> confirmed = $request->confirmed;
+        $user->name = $request->name;
+        $user->confirmed = $request->confirmed;
 
         $password = $request->password;
         $passwordConfirmation = $request->password_confirmation;
 
         if (!empty($password)) {
             if ($password === $passwordConfirmation) {
-                $user -> password = $password;
-                $user -> password_confirmation = $passwordConfirmation;
+                $user->password = $password;
+                $user->password_confirmation = $passwordConfirmation;
             }
         }
-        $user -> save();
-        AssignedRoles::where('user_id','=',$user->id)->delete();
-        foreach($request->roles as $item)
-        {
-            $role = new AssignedRoles;
-            $role -> role_id = $item;
-            $role -> user_id = $user -> id;
-            $role -> save();
+        $user->save();
+        AssignedRoles::where('user_id', '=', $user->id)->delete();
+        foreach ($request->roles as $item) {
+            $role = new AssignedRoles();
+            $role->role_id = $item;
+            $role->user_id = $user->id;
+            $role->save();
         }
     }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param $user
+     *
      * @return Response
      */
-
     public function getDelete($id)
     {
         $user = User::find($id);
@@ -121,11 +126,12 @@ class UserController extends AdminController {
      * Remove the specified resource from storage.
      *
      * @param $user
+     *
      * @return Response
      */
-    public function postDelete(DeleteRequest $request,$id)
+    public function postDelete(DeleteRequest $request, $id)
     {
-        $user= User::find($id);
+        $user = User::find($id);
         $user->delete();
     }
 
@@ -136,11 +142,11 @@ class UserController extends AdminController {
      */
     public function data()
     {
-        $users = User::select(array('users.id','users.name','users.email','users.confirmed', 'users.created_at'))
+        $users = User::select(['users.id', 'users.name', 'users.email', 'users.confirmed', 'users.created_at'])
             ->orderBy('users.email', 'ASC');
 
         return Datatables::of($users)
-            -> edit_column('confirmed', '@if ($confirmed=="1") <span class="glyphicon glyphicon-ok"></span> @else <span class=\'glyphicon glyphicon-remove\'></span> @endif')
+            ->edit_column('confirmed', '@if ($confirmed=="1") <span class="glyphicon glyphicon-ok"></span> @else <span class=\'glyphicon glyphicon-remove\'></span> @endif')
             ->add_column('actions', '<a href="{{{ URL::to(\'admin/users/\' . $id . \'/edit\' ) }}}" class="btn btn-success btn-sm iframe" ><span class="glyphicon glyphicon-pencil"></span>  {{ Lang::get("admin/modal.edit") }}</a>
                     <a href="{{{ URL::to(\'admin/users/\' . $id . \'/delete\' ) }}}" class="btn btn-sm btn-danger iframe"><span class="glyphicon glyphicon-trash"></span> {{ Lang::get("admin/modal.delete") }}</a>
                 ')
@@ -148,5 +154,4 @@ class UserController extends AdminController {
 
             ->make();
     }
-
 }
