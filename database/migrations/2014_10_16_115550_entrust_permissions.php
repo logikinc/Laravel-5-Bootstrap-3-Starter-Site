@@ -1,9 +1,10 @@
 <?php
-use Illuminate\Database\Schema\Blueprint;
+
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
-class EntrustPermissions extends Migration {
-
+class EntrustPermissions extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -13,18 +14,16 @@ class EntrustPermissions extends Migration {
     {
 
         // Creates the permissions table
-        Schema::create('permissions', function(Blueprint $table)
-        {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('display_name')->unique();
-			$table->boolean('is_admin');
+            $table->boolean('is_admin');
             $table->timestamps();
         });
 
         // Creates the permission_role (Many-to-Many relation) table
-        Schema::create('permission_role', function(Blueprint $table)
-        {
+        Schema::create('permission_role', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('permission_id')->unsigned()->index();
             $table->integer('role_id')->unsigned()->index();
@@ -44,5 +43,4 @@ class EntrustPermissions extends Migration {
         Schema::drop('permission_role');
         Schema::drop('permissions');
     }
-
 }

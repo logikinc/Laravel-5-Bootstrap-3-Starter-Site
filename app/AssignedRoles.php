@@ -1,13 +1,14 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AssignedRoles extends Model {
-    protected $guarded = array();
+class AssignedRoles extends Model
+{
+    protected $guarded = [];
 
-    public static $rules = array();
-	
-	protected $table = 'assigned_roles';
+    public static $rules = [];
 
-
+    protected $table = 'assigned_roles';
 }

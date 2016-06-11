@@ -11,13 +11,11 @@
 |
 */
 
-if (file_exists(__DIR__.'/../.env'))
-{
-	Dotenv::load(__DIR__.'/../');
+if (file_exists(__DIR__.'/../.env')) {
+    Dotenv::load(__DIR__.'/../');
 
-	//Dotenv::required('APP_ENV');
+    //Dotenv::required('APP_ENV');
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +28,6 @@ if (file_exists(__DIR__.'/../.env'))
 |
 */
 
-$env = $app->detectEnvironment(function()
-{
-	return getenv('APP_ENV') ?: 'production';
+$env = $app->detectEnvironment(function () {
+    return getenv('APP_ENV') ?: 'production';
 });

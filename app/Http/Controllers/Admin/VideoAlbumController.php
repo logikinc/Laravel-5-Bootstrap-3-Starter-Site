@@ -1,17 +1,19 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
 
-use App\VideoAlbum;
-use App\Language;
+namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\AdminController;
-use Bllim\Datatables\Facade\Datatables;
-use App\Http\Requests\Admin\PhotoAlbumRequest;
 use App\Http\Requests\Admin\DeleteRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Admin\PhotoAlbumRequest;
 use App\Http\Requests\Admin\ReorderRequest;
+use App\Language;
+use App\VideoAlbum;
+use Bllim\Datatables\Facade\Datatables;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
-class VideoAlbumController extends AdminController {
-
+class VideoAlbumController extends AdminController
+{
     /*
     * Display a listing of the resource.
     *
@@ -22,6 +24,7 @@ class VideoAlbumController extends AdminController {
         // Show the page
         return view('admin.videoalbum.index');
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -30,9 +33,9 @@ class VideoAlbumController extends AdminController {
     public function getCreate()
     {
         $languages = Language::all();
-        $language = "";
+        $language = '';
         // Show the page
-        return view('admin.videoalbum.create_edit', compact('languages','language'));
+        return view('admin.videoalbum.create_edit', compact('languages', 'language'));
     }
 
     /**
@@ -43,19 +46,21 @@ class VideoAlbumController extends AdminController {
     public function postCreate(PhotoAlbumRequest $request)
     {
         $photoalbum = new VideoAlbum();
-        $photoalbum -> user_id = Auth::id();
-        $photoalbum -> language_id = $request->language_id;
-        $photoalbum -> name = $request->name;
-        $photoalbum -> description = $request->description;
-        $photoalbum -> folderid = sha1($request -> name . time());
-        if ($photoalbum -> save()) {
-            File::makeDirectory(public_path() . '/images/videoalbum/' . $photoalbum -> folderid);
+        $photoalbum->user_id = Auth::id();
+        $photoalbum->language_id = $request->language_id;
+        $photoalbum->name = $request->name;
+        $photoalbum->description = $request->description;
+        $photoalbum->folderid = sha1($request->name.time());
+        if ($photoalbum->save()) {
+            File::makeDirectory(public_path().'/images/videoalbum/'.$photoalbum->folderid);
         }
     }
+
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
     public function getEdit($id)
@@ -64,32 +69,33 @@ class VideoAlbumController extends AdminController {
         $language = $videoalbum->language_id;
         $languages = Language::all();
 
-        return view('admin.videoalbum.create_edit',compact('videoalbum','languages','language'));
+        return view('admin.videoalbum.create_edit', compact('videoalbum', 'languages', 'language'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
     public function postEdit(PhotoAlbumRequest $request, $id)
     {
         $videoalbum = VideoAlbum::find($id);
-        $videoalbum -> user_id_edited = Auth::id();
-        $videoalbum -> language_id = $request->language_id;
-        $videoalbum -> name = $request->name;
-        $videoalbum -> description = $request->description;
-        $videoalbum -> save();
+        $videoalbum->user_id_edited = Auth::id();
+        $videoalbum->language_id = $request->language_id;
+        $videoalbum->name = $request->name;
+        $videoalbum->description = $request->description;
+        $videoalbum->save();
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param $id
+     *
      * @return Response
      */
-
     public function getDelete($id)
     {
         $videoalbum = VideoAlbum::find($id);
@@ -101,9 +107,10 @@ class VideoAlbumController extends AdminController {
      * Remove the specified resource from storage.
      *
      * @param $id
+     *
      * @return Response
      */
-    public function postDelete(DeleteRequest $request,$id)
+    public function postDelete(DeleteRequest $request, $id)
     {
         $photoalbum = VideoAlbum::find($id);
         $photoalbum->delete();
@@ -117,11 +124,11 @@ class VideoAlbumController extends AdminController {
     public function data()
     {
         $video_category = VideoAlbum::join('language', 'language.id', '=', 'video_album.language_id')
-            ->select(array('video_album.id','video_album.name','language.name as language','video_album.id as images_count', 'video_album.created_at'))
+            ->select(['video_album.id', 'video_album.name', 'language.name as language', 'video_album.id as images_count', 'video_album.created_at'])
             ->orderBy('video_album.position', 'ASC');
 
         return Datatables::of($video_category)
-            -> edit_column('images_count', '<a class="btn btn-primary btn-sm" >{{ DB::table(\'video\')->where(\'video_album_id\', \'=\', $id)->count() }}</a>')
+            ->edit_column('images_count', '<a class="btn btn-primary btn-sm" >{{ DB::table(\'video\')->where(\'video_album_id\', \'=\', $id)->count() }}</a>')
             ->add_column('actions', '<a href="{{{ URL::to(\'admin/video/\' . $id . \'/itemsforalbum\' ) }}}" class="btn btn-info btn-sm" ><span class="glyphicon glyphicon-open"></span>  {{ Lang::get("admin/modal.items") }}</a>
                     <a href="{{{ URL::to(\'admin/videoalbum/\' . $id . \'/edit\' ) }}}" class="btn btn-success btn-sm iframe" ><span class="glyphicon glyphicon-pencil"></span>  {{ Lang::get("admin/modal.edit") }}</a>
                     <a href="{{{ URL::to(\'admin/videoalbum/\' . $id . \'/delete\' ) }}}" class="btn btn-sm btn-danger iframe"><span class="glyphicon glyphicon-trash"></span> {{ Lang::get("admin/modal.delete") }}</a>
@@ -132,23 +139,24 @@ class VideoAlbumController extends AdminController {
     }
 
     /**
-     * Reorder items
+     * Reorder items.
      *
      * @param items list
+     *
      * @return items from @param
      */
-    public function getReorder(ReorderRequest $request) {
+    public function getReorder(ReorderRequest $request)
+    {
         $list = $request->list;
-        $items = explode(",", $list);
+        $items = explode(',', $list);
         $order = 1;
         foreach ($items as $value) {
             if ($value != '') {
-                VideoAlbum::where('id', '=', $value) -> update(array('position' => $order));
+                VideoAlbum::where('id', '=', $value)->update(['position' => $order]);
                 $order++;
             }
         }
+
         return $list;
     }
-
 }
-

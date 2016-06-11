@@ -1,11 +1,12 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Permission extends Model {
+class Permission extends Model
+{
+    protected $fillable = [];
 
-	protected $fillable = [];
-	
-	protected $table = 'permissions';
-
+    protected $table = 'permissions';
 }

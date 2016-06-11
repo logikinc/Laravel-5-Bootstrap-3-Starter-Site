@@ -1,14 +1,17 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminController;
-use App\Role;
+use App\Http\Requests\Admin\DeleteRequest;
+use App\Http\Requests\Admin\RoleRequest;
 use App\Permission;
 use App\PermissionRole;
+use App\Role;
 use Bllim\Datatables\Facade\Datatables;
-use App\Http\Requests\Admin\RoleRequest;
-use App\Http\Requests\Admin\DeleteRequest;
 
-class RoleController extends AdminController {
+class RoleController extends AdminController
+{
     /*
     * Display a listing of the resource.
     *
@@ -19,50 +22,52 @@ class RoleController extends AdminController {
         // Show the page
         return view('admin.roles.index');
     }
+
     /**
      * Show the form for creating a new resource.
      *
      * @return Response
      */
-    public function getCreate() {
+    public function getCreate()
+    {
         // Get all the available permissions
-        $permissionsAdmin = Permission::where('is_admin','=',1)->get();
-        $permissionsUser = Permission::where('is_admin','=',0)->get();
+        $permissionsAdmin = Permission::where('is_admin', '=', 1)->get();
+        $permissionsUser = Permission::where('is_admin', '=', 0)->get();
         // Selected permissions
-        $permisionsadd =array();
+        $permisionsadd = [];
 
         // Show the page
-        return view('admin.roles.create_edit', compact('permissionsAdmin', 'permissionsUser','permisionsadd'));
+        return view('admin.roles.create_edit', compact('permissionsAdmin', 'permissionsUser', 'permisionsadd'));
     }
+
     /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
-    public function postCreate(RoleRequest $request) {
-
+    public function postCreate(RoleRequest $request)
+    {
         $is_admin = 0;
         // Check if role is for admin user
-        $permissionsAdmin = Permission::where('is_admin','=',1)->get();
+        $permissionsAdmin = Permission::where('is_admin', '=', 1)->get();
 
-        foreach ($permissionsAdmin as $perm){
-            foreach($request->permission as $item){
-                if($item==$perm['id'] && $perm['is_admin']=='1')
-                {
+        foreach ($permissionsAdmin as $perm) {
+            foreach ($request->permission as $item) {
+                if ($item == $perm['id'] && $perm['is_admin'] == '1') {
                     $is_admin = 1;
                 }
             }
         }
         $role = new Role();
-        $role -> is_admin = $is_admin;
-        $role -> name = $request->name;
-        $role -> save();
+        $role->is_admin = $is_admin;
+        $role->name = $request->name;
+        $role->save();
 
         foreach ($request->permission as $item) {
             $permission = new PermissionRole();
             $permission->permission_id = $item;
             $permission->role_id = $role->id;
-            $permission -> save();
+            $permission->save();
         }
     }
 
@@ -70,47 +75,50 @@ class RoleController extends AdminController {
      * Show the form for editing the specified resource.
      *
      * @param $role
+     *
      * @return Response
      */
-    public function getEdit($id) {
+    public function getEdit($id)
+    {
         $role = Role::find($id);
-        $permissionsAdmin = Permission::where('is_admin','=',1)->get();
-        $permissionsUser = Permission::where('is_admin','=',0)->get();
-        $permisionsadd = PermissionRole::where('role_id','=',$id)->select('permission_id')->get();
+        $permissionsAdmin = Permission::where('is_admin', '=', 1)->get();
+        $permissionsUser = Permission::where('is_admin', '=', 0)->get();
+        $permisionsadd = PermissionRole::where('role_id', '=', $id)->select('permission_id')->get();
 
         // Show the page
-        return view('admin.roles.create_edit', compact('role', 'permissionsAdmin', 'permissionsUser','permisionsadd'));
+        return view('admin.roles.create_edit', compact('role', 'permissionsAdmin', 'permissionsUser', 'permisionsadd'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param $role
+     *
      * @return Response
      */
-    public function postEdit(RoleRequest $request, $id) {
+    public function postEdit(RoleRequest $request, $id)
+    {
         $is_admin = 0;
-        $permissionsAdmin = Permission::where('is_admin','=',1)->get();
-        foreach ($permissionsAdmin as $perm){
-            foreach($request->permission as $item){
-                if($item==$perm['id'] && $perm['is_admin']=='1')
-                {
+        $permissionsAdmin = Permission::where('is_admin', '=', 1)->get();
+        foreach ($permissionsAdmin as $perm) {
+            foreach ($request->permission as $item) {
+                if ($item == $perm['id'] && $perm['is_admin'] == '1') {
                     $is_admin = 1;
                 }
             }
         }
         $role = Role::find($id);
-        $role -> is_admin = $is_admin;
-        $role -> name = $request->name;
-        $role -> save();
+        $role->is_admin = $is_admin;
+        $role->name = $request->name;
+        $role->save();
 
-        PermissionRole::where('role_id','=',$id) -> delete();
+        PermissionRole::where('role_id', '=', $id)->delete();
 
         foreach ($request->permission as $item) {
-            $permission = new PermissionRole;
+            $permission = new PermissionRole();
             $permission->permission_id = $item;
             $permission->role_id = $role->id;
-            $permission -> save();
+            $permission->save();
         }
     }
 
@@ -118,9 +126,9 @@ class RoleController extends AdminController {
      * Remove the specified resource from storage.
      *
      * @param $role
+     *
      * @return Response
      */
-
     public function getDelete($id)
     {
         $role = Role::find($id);
@@ -132,13 +140,15 @@ class RoleController extends AdminController {
      * Remove the specified resource from storage.
      *
      * @param $post
+     *
      * @return Response
      */
-    public function postDelete(DeleteRequest $request,$id)
+    public function postDelete(DeleteRequest $request, $id)
     {
         $role = Role::find($id);
         $role->delete();
     }
+
     /**
      * Show a list of all the languages posts formatted for Datatables.
      *
@@ -146,7 +156,7 @@ class RoleController extends AdminController {
      */
     public function data()
     {
-        $roles = Role::select(array('roles.id','roles.name','roles.created_at'));
+        $roles = Role::select(['roles.id', 'roles.name', 'roles.created_at']);
 
         return Datatables::of($roles)
             ->add_column('actions', '<a href="{{{ URL::to(\'admin/roles/\' . $id . \'/edit\' ) }}}" class="btn btn-success btn-sm iframe" ><span class="glyphicon glyphicon-pencil"></span>  {{ Lang::get("admin/modal.edit") }}</a>
@@ -155,5 +165,4 @@ class RoleController extends AdminController {
             ->remove_column('id')
             ->make();
     }
-
 }

@@ -1,117 +1,119 @@
-<?php namespace App\Http\Controllers\Admin;
+<?php
+
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminController;
-use Illuminate\Support\Facades\Input;
+use App\Http\Requests\Admin\DeleteRequest;
+use App\Http\Requests\Admin\LanguageRequest;
+use App\Http\Requests\Admin\ReorderRequest;
 use App\Language;
 use Bllim\Datatables\Facade\Datatables;
-use App\Http\Requests\Admin\LanguageRequest;
-use App\Http\Requests\Admin\DeleteRequest;
-use App\Http\Requests\Admin\ReorderRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 
-class LanguageController extends AdminController {
+class LanguageController extends AdminController
+{
     /**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
+    {
         // Show the page
         return view('admin.language.index');
-	}
+    }
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function getCreate()
-	{
-       // Show the page
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function getCreate()
+    {
+        // Show the page
         return view('admin/language/create_edit');
-	}
+    }
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function postCreate(LanguageRequest $request)
-	{
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function postCreate(LanguageRequest $request)
+    {
         $language = new Language();
-        $language -> user_id = Auth::id();
-        $language -> lang_code = $request->lang_code;
-        $language -> name = $request->name;
+        $language->user_id = Auth::id();
+        $language->lang_code = $request->lang_code;
+        $language->name = $request->name;
 
-        $icon = "";
-        if(Input::hasFile('icon'))
-        {
+        $icon = '';
+        if (Input::hasFile('icon')) {
             $file = Input::file('icon');
             $filename = $file->getClientOriginalName();
-            $extension = $file -> getClientOriginalExtension();
-            $icon = sha1($filename . time()) . '.' . $extension;
+            $extension = $file->getClientOriginalExtension();
+            $icon = sha1($filename.time()).'.'.$extension;
         }
-        $language -> icon = $icon;
-        $language -> save();
+        $language->icon = $icon;
+        $language->save();
 
-        if(Input::hasFile('icon'))
-        {
-            $destinationPath = public_path() . '/images/language/'.$language->id.'/';
+        if (Input::hasFile('icon')) {
+            $destinationPath = public_path().'/images/language/'.$language->id.'/';
             Input::file('icon')->move($destinationPath, $icon);
         }
-	}
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function getEdit($id)
-	{
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function getEdit($id)
+    {
         $language = Language::find($id);
 
-        return view('admin/language/create_edit',compact('language'));
-	}
+        return view('admin/language/create_edit', compact('language'));
+    }
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function postEdit(LanguageRequest $request, $id)
-	{
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function postEdit(LanguageRequest $request, $id)
+    {
         $language = Language::find($id);
-        $language -> user_id_edited = Auth::id();
-        $language -> lang_code = $request->lang_code;
-        $language -> name = $request->name;
-        $icon = "";
+        $language->user_id_edited = Auth::id();
+        $language->lang_code = $request->lang_code;
+        $language->name = $request->name;
+        $icon = '';
 
-        if(Input::hasFile('icon'))
-        {
+        if (Input::hasFile('icon')) {
             $file = Input::file('icon');
             $filename = $file->getClientOriginalName();
-            $extension = $file -> getClientOriginalExtension();
-            $icon = sha1($filename . time()) . '.' . $extension;
+            $extension = $file->getClientOriginalExtension();
+            $icon = sha1($filename.time()).'.'.$extension;
         }
-        $language -> icon = $icon;
-        $language -> save();
+        $language->icon = $icon;
+        $language->save();
 
-        if(Input::hasFile('icon'))
-        {
-            $destinationPath = public_path() . '/images/language/'.$language->id.'/';
+        if (Input::hasFile('icon')) {
+            $destinationPath = public_path().'/images/language/'.$language->id.'/';
             Input::file('icon')->move($destinationPath, $icon);
         }
-	}
+    }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param $id
+     *
      * @return Response
      */
-
     public function getDelete($id)
     {
         $language = Language::find($id);
@@ -123,9 +125,10 @@ class LanguageController extends AdminController {
      * Remove the specified resource from storage.
      *
      * @param $id
+     *
      * @return Response
      */
-    public function postDelete(DeleteRequest $request,$id)
+    public function postDelete(DeleteRequest $request, $id)
     {
         $language = Language::find($id);
         $language->delete();
@@ -140,8 +143,8 @@ class LanguageController extends AdminController {
     {
         $language = Language::whereNull('language.deleted_at')
             ->orderBy('language.position', 'ASC')
-            ->select(array('language.id', 'language.name', 'language.lang_code',
-            'language.icon as icon'));
+            ->select(['language.id', 'language.name', 'language.lang_code',
+            'language.icon as icon', ]);
 
         return Datatables::of($language)
             ->edit_column('icon', '{!! ($icon!="")? "<img style=\"max-width: 30px; max-height: 30px;\" src=\"../images/language/$id/$icon\">":""; !!}')
@@ -155,22 +158,24 @@ class LanguageController extends AdminController {
     }
 
     /**
-     * Reorder items
+     * Reorder items.
      *
      * @param items list
+     *
      * @return items from @param
      */
-    public function getReorder(ReorderRequest $request) {
+    public function getReorder(ReorderRequest $request)
+    {
         $list = $request->list;
-        $items = explode(",", $list);
+        $items = explode(',', $list);
         $order = 1;
         foreach ($items as $value) {
             if ($value != '') {
-                Language::where('id', '=', $value) -> update(array('position' => $order));
+                Language::where('id', '=', $value)->update(['position' => $order]);
                 $order++;
             }
         }
+
         return $list;
     }
-
 }

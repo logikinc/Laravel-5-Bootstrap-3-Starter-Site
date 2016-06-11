@@ -1,11 +1,13 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\URL;
 
-class Photo extends Model{
+class Photo extends Model
+{
+    protected $table = 'photo';
 
-	protected $table = "photo";
     /**
      * Deletes a gallery image.
      *
@@ -13,10 +15,11 @@ class Photo extends Model{
      */
     public function delete()
     {
-       // Delete the gallery image
+        // Delete the gallery image
         return parent::delete();
     }
-	/**
+
+    /**
      * Get the post's author.
      *
      * @return User
@@ -25,6 +28,7 @@ class Photo extends Model{
     {
         return $this->belongsTo('App\User', 'user_id');
     }
+
     /**
      * Get the gallery for pictures.
      *
@@ -34,4 +38,4 @@ class Photo extends Model{
     {
         return $this->belongsTo('App\PhotoAlbum');
     }
-} 
+}

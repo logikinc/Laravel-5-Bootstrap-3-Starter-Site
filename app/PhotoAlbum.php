@@ -1,11 +1,13 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\URL;
 
-class PhotoAlbum extends Model{
+class PhotoAlbum extends Model
+{
+    protected $table = 'photo_album';
 
-	protected $table = "photo_album";
     /**
      * Deletes a gallery all
      * the associated images.
@@ -30,7 +32,8 @@ class PhotoAlbum extends Model{
     {
         return $this->belongsTo('App\User', 'user_id');
     }
-	 /**
+
+    /**
      * Get the post's comments.
      *
      * @return array
@@ -39,4 +42,4 @@ class PhotoAlbum extends Model{
     {
         return $this->hasMany('App\Photo');
     }
-} 
+}
